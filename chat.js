@@ -46,8 +46,22 @@ io.on('connection', function (socket) {
   });
 
   socket.on('join', function (name) {
-    users[socket.id] = name;
-    io.emit('event message', "anon@" + socket.id.substring(2, socket.id.length) + " has become " + name + ".");
+    var found = false;
+    // check if name exists already.
+    for (var prop in users) {
+      if (users.hasOwnProperty(prop)) {
+        if (users[prop] == name) {
+          found = true;
+        }
+      }
+    }
+
+    if (!found) {
+      users[socket.id] = name;
+      io.emit('event message', "anon@" + socket.id.substring(2, socket.id.length) + " has become " + name + ".");
+    } else {
+      socket.emit('event message', "Nickname [" + name + "] already exists!");
+    }
   });
 
   socket.on('ls', function () {
