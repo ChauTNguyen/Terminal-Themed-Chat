@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Terminal Chat</title>
+	<link rel="stylesheet" type="text/css" href="chat.css">
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+</head>
+<body>
+<div id="container">
+	<ul id="messages"></ul>
+
+	<form action="" id="send-message">
+		<input id="msg" autocomplete="off"/>
+	</form>
+</div>
+<script>
+	var socket = io();
+	$('#messages').append($('<li>').text("Type /help to display all commands."));
+
+	$("#send-message").submit(function () {
+		var msg = $('#msg').val();
+		var messages = $('#messages');
+		if (msg.replace(/ /g, '').length == 0) return false;
+		messages.append($('<li>').text("you: " + msg));
+
+		if (msg.charAt(0) == '/') {
+			// chat commands
+			if (msg.substring(1, msg.length) == 'help') {
+				messages.append($('<li>').text("--- list of commands---"));
+				messages.append($('<li>').text("/ls - lists all users. displays # of users & clients."));
+				messages.append($('<li>').text("/setname \<name\> - sets name."));
+				messages.append($('<li>').text("/pm \"\<name\>\" \<msg\> - message a user. requires a registered nickname."));
+			} else if (msg.substring(1, msg.length) == 'ls') {
+				messages.append($('<li>').text("--- list of users ---"));
+				socket.emit('ls');
+			} else if (msg.substring(1, 8) == 'setname') {
+				var name = msg.substring(9, msg.length);
+				if (name.replace(/ /g, '') != "") {
+					if (/\s/g.test(name)) {
+						socket.emit('event message', "No spaces allowed.");
+					} else {
+						socket.emit('join', name);
+					}
+				} else {
+					socket.emit('event message', "No empty names allowed.");
+				}
+			} else if (msg.substring(1, 3) == 'pm' && msg.substring(4, 5) == '\"') {
+				var index;
+				for (var i = 5; i < msg.length; ++i) {
+					if (msg.charAt(i) == '\"') {
+						index = i;
+						var pm_target = msg.substring(5, index);
+						var pm_message = msg.substring (index + 2, msg.length);
+						socket.emit('pm', pm_target, pm_message);
+					}
+				}
+			} else {
+				messages.append($('<li>').text(msg.substring(1, msg.length) + ": command not found"));
+			}
+		} else {
+			// regular messages
+			socket.emit('chat message', msg);
+		}
+
+		$('#msg').val('');
+		// The below line causes the site to scroll to the bottom on chat message $("#send-message").submit
+		$('html, body').animate({scrollTop: $(document).height()}, 'slow');
+		return false;
+	});
+
+	socket.on('chat message', function (msg) {
+		$('#messages').append($('<li>').text(msg));
+	});
+
+	socket.on('event message', function (msg) {
+		$('#messages').append($('<li>').text(msg));
+	});
+</script>
+</body>
+</html>

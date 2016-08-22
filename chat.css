@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+  font-family: Menlo;
+  background-color: #333333;
+  font-size: 11px;
+}
+
+#messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+#messages li {
+  padding-top: 5px;
+}
+
+input {
+  background-color: transparent;
+  border: 0 solid;
+  color: white;
+  outline: none;
+  width: 100%;
+  padding-top: 5px;
+}
