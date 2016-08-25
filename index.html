@@ -49,14 +49,29 @@
           socket.emit('event message', "No empty names allowed.");
         }
       } else if (msg.substring(1, 3) == 'pm' && msg.substring(4, 5) == '\"') {
-        var index;
-        for (var i = 5; i < msg.length; ++i) {
-          if (msg.charAt(i) == '\"') {
-            index = i;
-            var pm_target = msg.substring(5, index);
-            var pm_message = msg.substring(index + 2, msg.length);
-            socket.emit('pm', pm_target, pm_message);
+        if (msg.charAt(5) != '\"') {
+          var index = -1;
+          for (var i = 5; i < msg.length; ++i) {
+            if (msg.charAt(i) == '\"') {
+              index = i;
+              var pm_target = msg.substring(5, index);
+              if (pm_target.replace(/ /g, '') != "") {
+                var pm_message = msg.substring(index + 2, msg.length);
+                if (pm_message.replace(/ /g, '') != "") {
+                  socket.emit('pm', pm_target, pm_message);
+                } else {
+                  socket.emit('event message', "Cannot send an empty message!");
+                }
+              } else {
+                socket.emit('event message', "Cannot send to an empty name!");
+              }
+            }
           }
+          if (index == -1) {
+            socket.emit('event message', "/pm \"<name>\" <msg>");
+          }
+        } else {
+          socket.emit('event message', "/pm \"<name>\" <msg>");
         }
       } else {
         messages.append($('<li>').text(msg.substring(1, msg.length) + ": command not found"));
