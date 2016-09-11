@@ -7,7 +7,6 @@
   <title>Terminal Chat</title>
   <link rel="stylesheet" type="text/css" href="chat.css">
   <script src="/socket.io/socket.io.js"></script>
-  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
 <div id="container">
@@ -17,6 +16,7 @@
     <input id="msg" autocomplete="off"/>
   </form>
 </div>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   var socket = io();
   $('#messages').append($('<li>').text("Type /help to display all commands."));
