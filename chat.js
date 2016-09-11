@@ -74,9 +74,8 @@ io.on('connection', function (socket) {
     }
 
     var index = clients.indexOf(socket);
-    clients[index].emit('event message', "There are " + keys.length + " users" +
-      " & " + clients.length + " clients."
-    );
+    clients[index].emit('event message', clients.length + " clients are connected.");
+    clients[index].emit('event message', keys.length + " have registered nicknames.");
 
     for (var i = 0; i < keys.length; ++i) {
       clients[index].emit('event message', users[keys[i]]);
