@@ -34,6 +34,8 @@
         messages.append($('<li>').text("/ls - lists all users. displays # of users & clients."));
         messages.append($('<li>').text("/setname \<name\> - sets name."));
         messages.append($('<li>').text("/pm \"\<name\>\" \<msg\> - message a user. requires a registered nickname."));
+        messages.append($('<li>').text("/src - link to src code."));
+        messages.append($('<li>').text("/author - link to author's site."));
       } else if (msg.substring(1, msg.length) == 'ls') {
         messages.append($('<li>').text("--- list of users ---"));
         socket.emit('ls');
@@ -73,6 +75,10 @@
         } else {
           socket.emit('event message', "/pm \"<name>\" <msg>");
         }
+      } else if (msg.substring(1, msg.length) == 'src') {
+        messages.append($('<li>').text("src code: https://github.com/ChauTNguyen/Terminal-Themed-Chat"));
+      } else if (msg.substring(1, msg.length) == 'author') {
+        messages.append($('<li>').text("author's site: https://cnguyen.herokuapp.com"));
       } else {
         messages.append($('<li>').text(msg.substring(1, msg.length) + ": command not found"));
       }
