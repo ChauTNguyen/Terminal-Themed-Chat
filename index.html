@@ -62,7 +62,7 @@
                 if (pm_message.replace(/ /g, '') != "") {
                   socket.emit('pm', pm_target, pm_message);
                 } else {
-                  socket.emit('event message', "Cannot send an empty message!");
+                  messages.append($('<li>').text("Cannot send an empty message!"));
                 }
               } else {
                 socket.emit('event message', "Cannot send to an empty name!");

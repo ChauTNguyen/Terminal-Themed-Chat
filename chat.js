@@ -48,12 +48,11 @@ io.on('connection', function (socket) {
 
   socket.on('join', function (name) {
     var found = false;
-    // check if name exists already.
-    for (var prop in users) {
-      if (users.hasOwnProperty(prop)) {
-        if (users[prop] == name) {
-          found = true;
-        }
+
+    // Check if name exists already.
+    for (var userID in users) {
+      if (users[userID] === name) {
+        found = true;
       }
     }
 
@@ -66,6 +65,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('ls', function () {
+    // Get all values from the users dict.
     var keys = [];
     for (var key in users) {
       if (users.hasOwnProperty(key)) {
@@ -87,12 +87,9 @@ io.on('connection', function (socket) {
       socket.emit('event message', "You must have a nickname in order to use /pm.");
     } else {
       var targetUserID;
-
-      for (var prop in users) {
-        if (users.hasOwnProperty(prop)) {
-          if (users[prop] == pm_target) {
-            targetUserID = prop;
-          }
+      for (var userID in users) {
+        if (users[userID] === pm_target) {
+          targetUserID = userID;
         }
       }
 
